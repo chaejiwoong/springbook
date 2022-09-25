@@ -1,5 +1,7 @@
 package com.example.springbook.web;
 
+import com.example.springbook.config.auth.LoginUser;
+import com.example.springbook.config.auth.dto.SessionUser;
 import com.example.springbook.service.posts.PostsService;
 import com.example.springbook.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -8,16 +10,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpSession;
+
 // 폼에 관련된 GET 요청
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
 
     private final PostsService postsService;
+    private final HttpSession httpSession;
 
-    @GetMapping
-    public String index(Model model) {  // model : 서버 템플릿 엔진에서 사용할 수 있는 객체를 저장할 수 있다.
+    @GetMapping("/")
+    public String index(Model model, @LoginUser SessionUser user) {
+
         model.addAttribute("posts", postsService.findAllDesc());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "index";
     }
 

@@ -1,21 +1,29 @@
 package com.example.springbook.web;
 
+import com.example.springbook.config.auth.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = HelloController.class)    // Web(Spring MVC)에 집중할 수 있는 어노테이션
+@WebMvcTest(controllers = HelloController.class,
+excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+})    // Web(Spring MVC)에 집중할 수 있는 어노테이션
 class HelloControllerTest {
 
     @Autowired      // 스프링이 관리하는 빈을 주입 받는다.
     private MockMvc mvc;    // 웹 API를 테스트할 떄 사용한다. 스프링 MVC 테스트의 시작점. 이 클래스를 통해 API 테스트 가능.
 
     @Test
+    @WithMockUser(roles = "USER")
     public void hello_return() throws Exception {
         String hello = "hello";
 
@@ -26,6 +34,7 @@ class HelloControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void helloDto_return() throws Exception {
         String name = "hello";
         int amount = 1000;
