@@ -7,6 +7,7 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -15,6 +16,7 @@ spring:
 #        show_sql: true
         format_sql: true
         use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   session:
     store-type: jdbc
     jdbc:
